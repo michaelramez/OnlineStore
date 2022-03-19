@@ -21,7 +21,7 @@ public class WebDatabase {
     
     private Connection connection ;
     private PreparedStatement preStm = null;
-   private static  WebDatabase databaseInstance=new WebDatabase();
+    private static  WebDatabase databaseInstance=new WebDatabase();
 
     public WebDatabase() {
         

@@ -1,5 +1,6 @@
 
-import java.util.ArrayList;
+package customer;
+
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -21,10 +22,10 @@ public class Customer {
     private  String phone;
     private  int creditLimit;
     private  String address;
-    private ArrayList<String> interests;
+    private String interests;
 
     //this constructor for singn up 11 arg
-    public Customer(int id, String name, String customerName, String mail, String password, String job, String birthdaya, String phone, int creditLimit, String address, ArrayList<String> interests) {
+    public Customer(int id, String name, String customerName, String mail, String password, String job, String birthdaya, String phone, int creditLimit, String address, String interests) {
         this.customeeId = id;
         this.name = name;
         this.customerName = customerName;
@@ -123,11 +124,11 @@ public class Customer {
         this.address = address;
     }
 
-    public ArrayList<String> getInterests() {
+    public String getInterests() {
         return interests;
     }
 
-    public void setInterests(ArrayList<String> interests) {
+    public void setInterests(String interests) {
         this.interests = interests;
     }
     

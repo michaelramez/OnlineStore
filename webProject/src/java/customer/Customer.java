@@ -18,21 +18,20 @@ public class Customer {
     private String mail;
     private  String password;
     private  String job;
-    private  String birthdaya;
+    private  String birthday;
     private  String phone;
     private  int creditLimit;
     private  String address;
     private String interests;
 
     //this constructor for singn up 11 arg
-    public Customer(int id, String name, String customerName, String mail, String password, String job, String birthdaya, String phone, int creditLimit, String address, String interests) {
-        this.customeeId = id;
+    public Customer( String name, String customerName, String mail, String password, String job, String birthdaya, String phone, int creditLimit, String address, String interests) {
         this.name = name;
         this.customerName = customerName;
         this.mail = mail;
         this.password = password;
         this.job = job;
-        this.birthdaya = birthdaya;
+        this.birthday = birthdaya;
         this.phone = phone;
         this.creditLimit = creditLimit;
         this.address = address;
@@ -93,11 +92,11 @@ public class Customer {
     }
 
     public String getBirthdaya() {
-        return birthdaya;
+        return birthday;
     }
 
     public void setBirthdaya(String birthdaya) {
-        this.birthdaya = birthdaya;
+        this.birthday = birthdaya;
     }
 
     public String getPhone() {

@@ -30,7 +30,6 @@ public class CustomerHandler {
             preStm.setString(6, data.getJob());
             preStm.setString(7, data.getMail());
             preStm.setString(8, data.getAddress());
-//            preStm.setString(9, data.getInterests());//set only string
             preStm.setInt(10, data.getCreditLimit());
             preStm.setString(11, data.getPassword());
             
@@ -43,16 +42,6 @@ public class CustomerHandler {
         return result;
    }
     
-//public Boolean isadmin(Customer customer) throws SQLException, ClassNotFoundException {
-//        sqlCommand = "select * from customer where cusername = ? and isadmin = true";
-//        preStm = db.getConnection().prepareStatement(sqlCommand);
-//        preStm.setString(1, customer.getUsername());
-//        res = preStm.executeQuery();
-//        if (res.next()) {
-//            return true;
-//        }
-//        return false;
-//    }
      public boolean checkLogin(Customer data) throws SQLException {
         
         

@@ -14,25 +14,12 @@ public class Customer {
     private String phone;
     private int creditLimit;
     private String address;
-//    private boolean isadmin;
     private ArrayList<String> interests;
 
     public Customer() {
     }
 
     //this constructor for singn up 11 arg
-    public Customer(String name, String username, String mail, String password, String job, String birthday, String phone, int creditLimit, String address, ArrayList<String> interests) {
-        this.name = name;
-        this.username = username;
-        this.mail = mail;
-        this.password = password;
-        this.job = job;
-        this.birthday = birthday;
-        this.phone = phone;
-        this.creditLimit = creditLimit;
-        this.address = address;
-        this.interests = interests;
-    }
 
     public Customer(String name, String username, String mail, String password, String job, String birthday, String phone, int creditLimit, String address) {
         this.name = name;
@@ -44,7 +31,6 @@ public class Customer {
         this.phone = phone;
         this.creditLimit = creditLimit;
         this.address = address;
-//        this.isadmin = isadmin;
 
     }
 // costructor for login 
@@ -62,13 +48,6 @@ public class Customer {
         this.name = name;
     }
 
-//    public boolean isIsadmin() {
-//        return isadmin;
-//    }
-//
-//    public void setIsadmin(boolean isadmin) {
-//        this.isadmin = isadmin;
-//    }
 
     public String getUsername() {
         return username;
@@ -138,8 +117,5 @@ public class Customer {
         return interests;
     }
 
-    public void setInterests(ArrayList<String> interests) {
-        this.interests = interests;
-    }
 
 }

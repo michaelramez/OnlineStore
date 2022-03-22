@@ -68,9 +68,9 @@ public class WebDatabase {
     public void closeDatabase() throws SQLException{
      connection.close();
    }
-    public static void main(String[] args) {
+   /* public static void main(String[] args) {
         WebDatabase db =WebDatabase.databaseInstance;
         db.connectToDatabase();
-    }
+    }*/
     
 }

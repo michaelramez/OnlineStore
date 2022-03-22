@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 public class Signin extends HttpServlet {
 
     WebDatabase con = new WebDatabase();
-    CustomerHandler customerHandler = new CustomerHandler();
+    CustomerHandler customerHandler =CustomerHandler.getCustomerHandler();
     HttpSession session;
 
     @Override
@@ -34,13 +34,13 @@ public class Signin extends HttpServlet {
                 HttpSession session = request.getSession(true);
                 session.setAttribute("user", "yes");
                 session.setAttribute("islogin", "yes");
-                session.setAttribute("user_id", 0);
+                session.setAttribute("user_id", 0);//essraa i make db fuction for get login user id
                 session.setAttribute("username", customer.getUsername());
                 response.sendRedirect("Home.jsp");
 
             } else {
 
-                out.print("username doesnot match");
+                out.print("please check userName Or Password");
             }
         } catch (Exception e) {
         }

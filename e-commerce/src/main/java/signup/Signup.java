@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 public class Signup extends HttpServlet {
 
     WebDatabase con = WebDatabase.getDatabaseInstance();
-    CustomerHandler customerHandler = new CustomerHandler();
+    CustomerHandler customerHandler =CustomerHandler.getCustomerHandler();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -40,11 +40,11 @@ public class Signup extends HttpServlet {
 
         Customer customer = new Customer(name, username, mail, password, job, birthday, phone, creditLimit, address);
 
-       if (customerHandler.addUserData(customer) == 1 && username != null) {
+       if (customerHandler.addUserData(customer) == true && username != null) {
 
            response.sendRedirect("Login.html");
         } else {
-            out.print("Data Requried");
+            out.print(" useralready exist");
         }
     }
 

@@ -14,7 +14,8 @@ public class Customer {
     private String phone;
     private int creditLimit;
     private String address;
-    private ArrayList<String> interests;
+    private static Customer customer=new Customer();
+    
 
     public Customer() {
     }
@@ -113,8 +114,8 @@ public class Customer {
         this.address = address;
     }
 
-    public ArrayList<String> getInterests() {
-        return interests;
+    public static Customer getCustomer() {
+        return customer;
     }
 
 

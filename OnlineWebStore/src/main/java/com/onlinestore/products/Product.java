@@ -4,17 +4,16 @@
  */
 package com.onlinestore.products;
 
-import com.onlinestore.database.WebDatabase;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
 /**
  *
  * @author Michael Ramez
  */
 public class Product {
 
-    private int id, stockQuantity, price;
+    private final int id;
+
+    private int stockQuantity, price;
+
     private String type, model, imagePath;
 
     public Product(int id, int stockQuantity, int price, String type, String model, String imagePath) {
@@ -26,6 +25,9 @@ public class Product {
         this.imagePath = imagePath;
     }
 
+    public int getId() {
+        return id;
+    }
 
     public int getStockQuantity() {
         return stockQuantity;
@@ -47,13 +49,17 @@ public class Product {
         return type;
     }
 
-
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getModel() {
         return model;
     }
 
-
+    public void setModel(String model) {
+        this.model = model;
+    }
 
     public String getImagePath() {
         return imagePath;
@@ -63,9 +69,7 @@ public class Product {
         this.imagePath = imagePath;
     }
 
-
-
-//    public void ViewRating() {
+    //    public void ViewRating() {
 //        //mongodb
 //    }
 }

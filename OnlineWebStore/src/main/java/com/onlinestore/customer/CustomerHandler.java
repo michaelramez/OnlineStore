@@ -5,31 +5,31 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class CustomerHandler {
 
-    private PreparedStatement preStm;
-    private String sqlCommand;
+//    private PreparedStatement preStm;
+//    private String sqlCommand;
     private ResultSet res;
-    private static WebDatabase db = WebDatabase.getDatabaseInstance();
-    private static CustomerHandler customerHandler = new CustomerHandler();
+    private static final WebDatabase db = WebDatabase.getDatabaseInstance();
+    private static final CustomerHandler customerHandlerInstance = new CustomerHandler();
 
-    private CustomerHandler(){
-        
+    private CustomerHandler() {
+
     }
-    public static CustomerHandler getCustomerHandler() {
-        return customerHandler;
+
+    public static CustomerHandler getCustomerHandlerInstance() {
+        return customerHandlerInstance;
     }
+
 
     public boolean addUserData(Customer data) {
         boolean result = false;
         Date date = Date.valueOf(data.getBirthday());
         try {
 
-            sqlCommand = "insert into customer (cname,cdob,cusername,cpassword,cphone,cjob,cmail,caddress,ccredit_limit) Values (?,?,?,?,?,?,?,?,?)";
-            preStm = db.getConnection().prepareStatement(sqlCommand);
+            String sqlCommand = "insert into customer (cname,cdob,cusername,cpassword,cphone,cjob,cmail,caddress,ccredit_limit) Values (?,?,?,?,?,?,?,?,?)";
+            PreparedStatement preStm = db.getConnection().prepareStatement(sqlCommand);
             preStm.setString(1, data.getName());
             preStm.setDate(2, date);
             preStm.setString(3, data.getUsername());
@@ -61,8 +61,8 @@ public class CustomerHandler {
     public boolean checkLogin(Customer data) {
         boolean result = false;
         try {
-            sqlCommand = "select cid from customer where cusername=? and cpassword=?";
-            preStm = db.getConnection().prepareStatement(sqlCommand);
+            String sqlCommand = "select cid from customer where cusername=? and cpassword=?";
+            PreparedStatement preStm = db.getConnection().prepareStatement(sqlCommand);
             preStm.setString(1, data.getUsername());
             preStm.setString(2, data.getPassword());
             res = preStm.executeQuery();
@@ -80,8 +80,8 @@ public class CustomerHandler {
         int cid = 0;
         try {
 
-            sqlCommand = "select cid from customer where cusername = ? and cpassword = ? ";
-            preStm = db.getConnection().prepareStatement(sqlCommand);
+            String sqlCommand = "select cid from customer where cusername = ? and cpassword = ? ";
+            PreparedStatement preStm = db.getConnection().prepareStatement(sqlCommand);
             preStm.setString(1, customer.getUsername());
             preStm.setString(2, customer.getPassword());
             res = preStm.executeQuery();
@@ -104,8 +104,8 @@ public class CustomerHandler {
         int creditLimit = 0;
         try {
 
-            sqlCommand = "select ccredit_limit from customer where cid= ?  ";
-            preStm = db.getConnection().prepareStatement(sqlCommand);
+            String sqlCommand = "select ccredit_limit from customer where cid= ?  ";
+            PreparedStatement preStm = db.getConnection().prepareStatement(sqlCommand);
             preStm.setInt(1, cid);
             res = preStm.executeQuery();
             while (res.next()) {
@@ -121,11 +121,11 @@ public class CustomerHandler {
         }
     }
 
-    public void updateUserCredit(int critedUpdates, int cid) {
+    public void updateUserCredit(int creditUpdates, int cid) {
         try {
-            sqlCommand = "update customer set ccredit_limit =?  where cid=? ";
-            preStm = db.getConnection().prepareStatement(sqlCommand);
-            preStm.setInt(1, critedUpdates);
+            String sqlCommand = "update customer set ccredit_limit =?  where cid=? ";
+            PreparedStatement preStm = db.getConnection().prepareStatement(sqlCommand);
+            preStm.setInt(1, creditUpdates);
             preStm.setInt(2, cid);
             preStm.executeUpdate();
         } catch (SQLException ex) {
@@ -136,15 +136,14 @@ public class CustomerHandler {
     }
 
     public static void main(String[] args) {
-        db.connectToDatabase();
-        //Customer c = new Customer("asmaa", "asmaamohamed", "asmaa@gmail.com", "12346", "Engineer", "1998-6-1", "01093693045", 1000, "almarg");
-        //System.out.println( customerHandler.addUserData(c));
-        Customer c1 = new Customer("asmaamoamed", "12346");
-        System.out.println(customerHandler.checkLogin(c1));
-        System.out.println(customerHandler.getCreditLimit(3));
-        customerHandler.updateUserCredit(9999,3);
-       System.out.println(customerHandler.getCreditLimit(3));
-
+//        db.connectToDatabase();
+//        Customer c = new Customer("asmaa", "asmaamohamed", "asmaa@gmail.com", "12346", "Engineer", "1998-6-1", "01093693045", 1000, "almarg");
+//        System.out.println( customerHandler.addUserData(c));
+//        Customer c1 = new Customer("asmaamoamed", "12346");
+//        System.out.println(customerHandler.checkLogin(c1));
+//        System.out.println(customerHandler.getCreditLimit(3));
+//        customerHandler.updateUserCredit(9999, 3);
+//        System.out.println(customerHandler.getCreditLimit(3));
 
     }
 

@@ -25,7 +25,7 @@ public class Stock {
     private static final Stock stockInstance = new Stock();
 
     private Stock() {
-        products = new HashMap<>();
+        this.products = new HashMap<>();
     }
     
     public static Stock getStockInstance(){

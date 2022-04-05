@@ -6,10 +6,9 @@
 $(document).ready(function(){
   $("button").click(function(){
     $.post("test.jsp",
-    {
-      name: "Donald Duck",
-      city: "Duckburg"
-    },
+//    {"products[]":[1,2,3]}
+    {"products":"[{id:1,reqQuantity:5},{id:2,reqQuantity:10}]"}
+    ,
     function(data,status){
       alert("Data: " + data + "\nStatus: " + status);
     });

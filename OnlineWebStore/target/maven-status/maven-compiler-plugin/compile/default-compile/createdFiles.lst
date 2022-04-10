@@ -1,0 +1,9 @@
+com\onlinestore\products\Product.class
+com\onlinestore\customer\Customer.class
+com\onlinestore\products\Stock.class
+com\onlinestore\twilio\TwilioMessages.class
+com\onlinestore\customer\CustomerHandler.class
+com\onlinestore\order\OrderProduct.class
+com\onlinestore\database\WebDatabase.class
+com\onlinestore\order\Order.class
+com\onlinestore\twilio\TwilioPhoneCalls.class

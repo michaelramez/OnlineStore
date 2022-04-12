@@ -10,14 +10,14 @@ package com.onlinestore.products;
  */
 public class Product {
 
-    private final int id;
+    private final int pid;
 
     private int stockQuantity, price;
 
     private String type, model, imagePath;
 
-    public Product(int id, int stockQuantity, int price, String type, String model, String imagePath) {
-        this.id = id;
+    public Product(int pid, int stockQuantity, int price, String type, String model, String imagePath) {
+        this.pid = pid;
         this.stockQuantity = stockQuantity;
         this.price = price;
         this.type = type;
@@ -25,8 +25,8 @@ public class Product {
         this.imagePath = imagePath;
     }
 
-    public int getId() {
-        return id;
+    public int getPid() {
+        return pid;
     }
 
     public int getStockQuantity() {

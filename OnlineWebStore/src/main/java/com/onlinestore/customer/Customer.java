@@ -13,7 +13,7 @@ public class Customer {
     private String phone;
     private int creditLimit;
     private String address;
-    private static Customer customer=new Customer();
+
     
 
     public Customer() {
@@ -33,7 +33,6 @@ public class Customer {
         this.address = address;
 
     }
-// costructor for login 
 
     public Customer(String Username, String password) {
         this.username = Username;
@@ -44,78 +43,36 @@ public class Customer {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
     public String getUsername() {
         return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getMail() {
         return mail;
     }
 
-    public void setMail(String mail) {
-        this.mail = mail;
-    }
-
     public String getPassword() {
         return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getJob() {
         return job;
     }
 
-    public void setJob(String job) {
-        this.job = job;
-    }
-
     public String getBirthday() {
         return birthday;
-    }
-
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
     }
 
     public String getPhone() {
         return phone;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
     public int getCreditLimit() {
         return creditLimit;
-    }
-
-    public void setCreditLimit(int creditLimit) {
-        this.creditLimit = creditLimit;
     }
 
     public String getAddress() {
         return address;
     }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public static Customer getCustomer() {
-        return customer;
-    }
-
 
 }

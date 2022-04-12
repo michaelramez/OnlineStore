@@ -25,7 +25,7 @@ public class Order {
     private final List<OrderProduct> order;
     private final int cid;
     private int totalOrderPrice;
-    private int customerCredit;
+    private final int customerCredit;
 
     public Order(List<OrderProduct> order, int cid) {
         this.customerCredit = customerHandler.getCreditLimit(cid);
@@ -56,11 +56,11 @@ public class Order {
         int validityStatus = 0;
 
         if (CheckCustomerCredit() == false) {
-            validityStatus = 1;
+            validityStatus = -1;
         }
 
         if (CheckOrderInStock() == false) {
-            validityStatus = 2;
+            validityStatus = -2;
         }
 
         return validityStatus;
@@ -77,12 +77,12 @@ public class Order {
                     int stockQuantity = stockProduct.getStockQuantity();
                     stockProduct.setStockQuantity(stockQuantity - reqQuantity);
                     db.getConnection().setAutoCommit(false);
-                    stock.UpdateProductQuantity(stockProduct.getId(), stockQuantity - reqQuantity);
+                    stock.UpdateProductQuantity(stockProduct.getPid(), stockQuantity - reqQuantity);
                 }
                 customerHandler.updateUserCredit(customerCredit - totalOrderPrice, cid);
                 db.getConnection().commit();
             } catch (SQLException ex) {
-                Logger.getLogger(Stock.class.getName()).log(Level.SEVERE, null, ex);
+                transStatus = -3;
             }
         }
 

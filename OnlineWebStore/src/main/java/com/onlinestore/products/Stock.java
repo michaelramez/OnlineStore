@@ -10,8 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -19,7 +17,6 @@ import java.util.logging.Logger;
  */
 public class Stock {
 
-    private ResultSet res;
     private final Map<Integer, Product> products;
     private static final WebDatabase db = WebDatabase.getDatabaseInstance();
     private static final Stock stockInstance = new Stock();
@@ -32,8 +29,8 @@ public class Stock {
         return stockInstance;
     }
     
-    public int GetProductPrice(int id){
-        return this.products.get(id).getPrice();
+    public int GetProductPrice(int pid){
+        return this.products.get(pid).getPrice();
     }
     
     
@@ -41,19 +38,19 @@ public class Stock {
         String sqlCommand = "select * from product";
         try {
             PreparedStatement preStm = db.getConnection().prepareStatement(sqlCommand);
-            res = preStm.executeQuery();
+            ResultSet res = preStm.executeQuery();
             while (res.next()) {
-                int id = res.getInt("pid");
+                int pid = res.getInt("pid");
                 int stockQuantity = res.getInt("pquantity");
                 int price = res.getInt("pprice");
                 String type = res.getString("ptype");
                 String model = res.getString("pmodel");
                 String imagePath = res.getString("pimage_path");
-                Product product = new Product(id, stockQuantity, price, type, model, imagePath);
-                products.put(id, product);
+                Product product = new Product(pid, stockQuantity, price, type, model, imagePath);
+                products.put(pid, product);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(Stock.class.getName()).log(Level.SEVERE, null, ex);
+            
         }
 
     }
@@ -63,7 +60,7 @@ public class Stock {
     }
     
     public void AddProduct(Product product) {
-        String sqlCommand = "insert into product(ptype, pmodel, pquantity,pprice, pimage_path) values(?, ?, ?, ?, ?) returning pid ";
+        String sqlCommand = "insert into product(ptype, pmodel, pquantity,pprice, pimage_path) values(?, ?, ?, ?, ?) returning pid";
         try {
             PreparedStatement preStm = db.getConnection().prepareStatement(sqlCommand);
             preStm.setString(1, product.getType());
@@ -71,57 +68,52 @@ public class Stock {
             preStm.setInt(3, product.getStockQuantity());
             preStm.setInt(4, product.getPrice());
             preStm.setString(5, product.getImagePath());
-            res = preStm.executeQuery();
-            int id = res.getInt("pid");
-            products.put(id, product);
+            ResultSet res = preStm.executeQuery();
+            int pid = res.getInt("pid");
+            products.put(pid, product);
 
         } catch (SQLException ex) {
-            Logger.getLogger(Stock.class.getName()).log(Level.SEVERE, null, ex);
+            
         }
     }
 
-    public void UpdateProductPrice(int id, int newPrice) {
+    public void UpdateProductPrice(int pid, int newPrice) {
         String sqlCommand = "update product set pprice = ? where pid = ? ";
         try {
             PreparedStatement preStm = db.getConnection().prepareStatement(sqlCommand);
             preStm.setInt(1, newPrice);
-            preStm.setInt(2, id);
-
+            preStm.setInt(2, pid);
             preStm.executeUpdate();
-
-            products.get(id).setPrice(newPrice);
-
+            products.get(pid).setPrice(newPrice);
         } catch (SQLException ex) {
-            Logger.getLogger(Stock.class.getName()).log(Level.SEVERE, null, ex);
+            
         }
     }
 
-    public boolean UpdateProductQuantity(int id, int newQuantity) {
-        boolean updateSuccessful = false;
+    public void UpdateProductQuantity(int pid, int newQuantity) {
+
         String sqlCommand = "update product set pquantity = ? where pid = ? ";
         try {
             PreparedStatement preStm = db.getConnection().prepareStatement(sqlCommand);
             preStm.setInt(1, newQuantity);
-            preStm.setInt(2, id);
+            preStm.setInt(2, pid);
             preStm.executeUpdate();
-            products.get(id).setStockQuantity(newQuantity);
-            updateSuccessful = true;
+            products.get(pid).setStockQuantity(newQuantity);
         } catch (SQLException ex) {
-            Logger.getLogger(Stock.class.getName()).log(Level.SEVERE, null, ex);
+            
         }
-        return updateSuccessful;
     }   
 
-    public void RemoveProduct(int id) {
+    public void RemoveProduct(int pid) {
         String sqlCommand = "delete from product where pid = ?";
         try {
             PreparedStatement preStm = db.getConnection().prepareStatement(sqlCommand);
-            preStm.setInt(1, id);
+            preStm.setInt(1, pid);
             preStm.executeUpdate();
-            products.remove(id);
+            products.remove(pid);
 
         } catch (SQLException ex) {
-            Logger.getLogger(Stock.class.getName()).log(Level.SEVERE, null, ex);
+            
         }
     }
 

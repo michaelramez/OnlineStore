@@ -22,7 +22,48 @@ import org.bson.conversions.Bson;
  * @author Michael Ramez
  */
 public class MongoDB {
+    private final String URL = "mongodb://localhost:27017";
+    private final String DBName = "productsrating";
+    private final String collectionName = "product";
+    private MongoClient mongoClient;
+    private MongoDatabase mongoDatabase;
+    private MongoCollection<Document> mongoCollection;
+    private static final MongoDB mongoInstance = new MongoDB();
     
+    private MongoDB() {
+    }
+    
+    
+    
+    public static MongoDB GetMongoDBInstance(){
+        return mongoInstance;
+    }
+    
+    public void ConnectToMongo(){
+        mongoClient = MongoClients.create(URL);
+        mongoDatabase = mongoClient.getDatabase(DBName);
+        mongoCollection = mongoDatabase.getCollection(collectionName);
+    }
+    
+    public void MongoInsert(){
+        
+    }
+    
+    public void MongoUpdate(){
+        
+    }
+    
+    public void MongoDelete(){
+        
+    }
+    
+    public void MongoFindOne(){
+        
+    }
+    
+    public void MongoFindMany(){
+        
+    }
     
     public static void main(String[] args) {
         String URL = "mongodb://localhost:27017";
@@ -57,6 +98,5 @@ public class MongoDB {
             System.out.println("rating is: " + cursor.next().getString("rating"));
         }
         cursor.close();
-
     }
 }

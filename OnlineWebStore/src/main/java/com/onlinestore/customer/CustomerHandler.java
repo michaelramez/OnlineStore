@@ -8,9 +8,6 @@ import java.sql.SQLException;
 
 public class CustomerHandler {
 
-//    private PreparedStatement preStm;
-//    private String sqlCommand;
-    private ResultSet res;
     private static final WebDatabase db = WebDatabase.getDatabaseInstance();
     private static final CustomerHandler customerHandlerInstance = new CustomerHandler();
 
@@ -23,102 +20,72 @@ public class CustomerHandler {
     }
 
 
-    public boolean addUserData(Customer data) {
-        boolean result = false;
-        Date date = Date.valueOf(data.getBirthday());
+    public int addUserData(Customer customer) {
+        
+        Date date = Date.valueOf(customer.getBirthday());
+        int cid;
         try {
 
-            String sqlCommand = "insert into customer (cname,cdob,cusername,cpassword,cphone,cjob,cmail,caddress,ccredit_limit) Values (?,?,?,?,?,?,?,?,?)";
+            String sqlCommand = "insert into customer (cname,cdob,cusername,cpassword,cphone,cjob,cmail,caddress,ccredit_limit) "
+                    + "Values (?,?,?,?,?,?,?,?,?) returning cid";
             PreparedStatement preStm = db.getConnection().prepareStatement(sqlCommand);
-            preStm.setString(1, data.getName());
+            preStm.setString(1, customer.getName());
             preStm.setDate(2, date);
-            preStm.setString(3, data.getUsername());
-            preStm.setString(4, data.getPassword());
-            preStm.setString(5, data.getPhone());
-            preStm.setString(6, data.getJob());
-            preStm.setString(7, data.getMail());
-            preStm.setString(8, data.getAddress());
-            preStm.setInt(9, data.getCreditLimit());
-
-            preStm.executeUpdate();
-            System.out.println(result);
-            result = true;
-
+            preStm.setString(3, customer.getUsername());
+            preStm.setString(4, customer.getPassword());
+            preStm.setString(5, customer.getPhone());
+            preStm.setString(6, customer.getJob());
+            preStm.setString(7, customer.getMail());
+            preStm.setString(8, customer.getAddress());
+            preStm.setInt(9, customer.getCreditLimit());
+            ResultSet res = preStm.executeQuery();
+            cid = res.getInt("cid");
+            
         } catch (SQLException ex) {
-            System.err.format("SQL State: %s\n%s", ex.getSQLState(), ex.getMessage());
-            System.out.println(ex.getSQLState());//aready exiists if ==23505
-            System.out.println("customer.CustomerHandler.addUserData()");
-            if (ex.getSQLState().equals("23505")) {
-                result = false;
-
-            }
-        } finally {
-            return result;
-        }
+            cid = -2;
+        } 
+        return cid;
+        
 
     }
 
-    public boolean checkLogin(Customer data) {
-        boolean result = false;
+    public int checkLogin(Customer customer) {
+        int cid = -1;
         try {
+            
             String sqlCommand = "select cid from customer where cusername=? and cpassword=?";
-            PreparedStatement preStm = db.getConnection().prepareStatement(sqlCommand);
-            preStm.setString(1, data.getUsername());
-            preStm.setString(2, data.getPassword());
-            res = preStm.executeQuery();
-            result = res.next();
-        } catch (SQLException ex) {
-            System.err.format("SQL State: %s\n%s", ex.getSQLState(), ex.getMessage());
-            System.out.println(ex.getSQLState());
-            System.out.println("customer.CustomerHandler.checkLogin()");
-        } finally {
-            return result;
-        }
-    }
-
-    public int getUserId(Customer customer) {
-        int cid = 0;
-        try {
-
-            String sqlCommand = "select cid from customer where cusername = ? and cpassword = ? ";
             PreparedStatement preStm = db.getConnection().prepareStatement(sqlCommand);
             preStm.setString(1, customer.getUsername());
             preStm.setString(2, customer.getPassword());
-            res = preStm.executeQuery();
-            if (res.next()) {
-
-                cid = res.getInt("id");
+            ResultSet res = preStm.executeQuery();
+            if (! res.next()) {
+                cid = addUserData(customer);
             }
-
+            
         } catch (SQLException ex) {
-            System.err.format("SQL State: %s\n%s", ex.getSQLState(), ex.getMessage());
-            System.out.println(ex.getSQLState());
-            System.out.println("customer.CustomerHandler.getUserId()");
-        } finally {
-
-            return cid;
+           cid = -2;
         }
+        
+        return cid;
+
     }
 
     public int getCreditLimit(int cid) {
-        int creditLimit = 0;
+        int creditLimit = -1;
         try {
 
-            String sqlCommand = "select ccredit_limit from customer where cid= ?  ";
+            String sqlCommand = "select ccredit_limit from customer where cid= ?";
             PreparedStatement preStm = db.getConnection().prepareStatement(sqlCommand);
             preStm.setInt(1, cid);
-            res = preStm.executeQuery();
-            while (res.next()) {
+            ResultSet res = preStm.executeQuery();
+            if (res.next()) {
                 creditLimit = res.getInt(1);
             }
-
         } catch (SQLException ex) {
-            System.err.format("SQL State: %s\n%s", ex.getSQLState(), ex.getMessage());
-            System.out.println(ex.getSQLState());
-            System.out.println("customer.CustomerHandler.getCreditLimit()");
-        } finally {
-            return creditLimit;
-        }
+            creditLimit = -2;
+        } 
+        return creditLimit;
+
     }
 
     public void updateUserCredit(int creditUpdates, int cid) {
@@ -129,9 +96,7 @@ public class CustomerHandler {
             preStm.setInt(2, cid);
             preStm.executeUpdate();
         } catch (SQLException ex) {
-            System.err.format("SQL State: %s\n%s", ex.getSQLState(), ex.getMessage());
-            System.out.println(ex.getSQLState());
-            System.out.println("customer.CustomerHandler.updateUserCredit()");
+            
         }
     }
 
@@ -148,3 +113,4 @@ public class CustomerHandler {
     }
 
 }
+

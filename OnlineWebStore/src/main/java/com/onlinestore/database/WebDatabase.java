@@ -44,7 +44,7 @@ public class WebDatabase {
             connection = DriverManager.getConnection(url, userName, pass);
             System.out.println("Connection is made successfully");
 
-        } catch (Exception ex) {
+        } catch (ClassNotFoundException | SQLException ex) {
             System.out.println("webDatabase.WebDataBase.connect()error");
         }
 
@@ -57,7 +57,7 @@ public class WebDatabase {
     }
 
     public static void main(String[] args) throws SQLException {
-        WebDatabase db = WebDatabase.databaseInstance;
+//        WebDatabase db = WebDatabase.databaseInstance;
     }
 
 }

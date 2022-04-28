@@ -1,6 +1,7 @@
 package com.onlinestore.customer;
 
 import com.onlinestore.database.WebDatabase;
+import com.onlinestore.twilio.TwilioService;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,16 +19,44 @@ public class CustomerHandler {
     public static CustomerHandler getCustomerHandlerInstance() {
         return customerHandlerInstance;
     }
+    
+    public class RegistrationErrors{
+        private boolean userExits, sqlError, otherError;
+        TwilioService.PhoneValidationErrors phoneValidationErrors;
+        private RegistrationErrors() {
+            this.userExits = this.sqlError = this.otherError = true;
+        }
 
+        public boolean isOtherError() {
+            return otherError;
+        }
 
-    public int addUserData(Customer customer) {
+        public boolean isSqlError() {
+            return sqlError;
+        }
+ 
+        public boolean isNoErrors() {
+            return userExits == false && sqlError == false && otherError == false && phoneValidationErrors.isNoErrors()== true;
+        }
+
+        public boolean isUserExits() {
+            return userExits;
+        }
+
+        public TwilioService.PhoneValidationErrors isPhoneInvalid() {
+            return phoneValidationErrors;
+        }
         
+    }
+    
+
+    private void addUserData(Customer customer) {
+
         Date date = Date.valueOf(customer.getBirthday());
-        int cid;
         try {
 
-            String sqlCommand = "insert into customer (cname,cdob,cusername,cpassword,cphone,cjob,cmail,caddress,ccredit_limit) "
-                    + "Values (?,?,?,?,?,?,?,?,?) returning cid";
+            String sqlCommand = "insert into customer (cname,cdob,cusername,cpassword,cphone,cjob,cmail,caddress,ccredit_limit)"
+                    + "Values (?,?,?,?,?,?,?,?,?)";
             PreparedStatement preStm = db.getConnection().prepareStatement(sqlCommand);
             preStm.setString(1, customer.getName());
             preStm.setDate(2, date);
@@ -38,40 +67,65 @@ public class CustomerHandler {
             preStm.setString(7, customer.getMail());
             preStm.setString(8, customer.getAddress());
             preStm.setInt(9, customer.getCreditLimit());
-            ResultSet res = preStm.executeQuery();
-            cid = res.getInt("cid");
-            
+            preStm.executeUpdate();
+
+
         } catch (SQLException ex) {
-            cid = -2;
-        } 
-        return cid;
-        
+
+        }
 
     }
 
-    public int checkLogin(Customer customer) {
-        int cid = -1;
+    public RegistrationErrors checkRegister(Customer customer) {
+        RegistrationErrors registrationErrors = new RegistrationErrors();
+        TwilioService twilioService = TwilioService.GetTwilioServiceInstance();
+        registrationErrors.phoneValidationErrors = twilioService.ValidatePhoneNumber(customer.getPhone());
+
         try {
-            
+
+            String sqlCommand = "select cid from customer where cusername=?";
+            PreparedStatement preStm = db.getConnection().prepareStatement(sqlCommand);
+            preStm.setString(1, customer.getUsername());
+            ResultSet res = preStm.executeQuery();
+            if (res.next()) {          
+                registrationErrors.userExits = true;
+            }
+        } catch (SQLException ex) {
+            registrationErrors.sqlError = true;
+        }catch(Exception ex){
+            registrationErrors.otherError = true;
+        }
+        if (registrationErrors.isNoErrors()){
+            addUserData(customer);
+        } 
+        
+        return registrationErrors;
+    }
+
+    public int checkLogin(Customer customer) {
+        int cid;
+        try {
+
             String sqlCommand = "select cid from customer where cusername=? and cpassword=?";
             PreparedStatement preStm = db.getConnection().prepareStatement(sqlCommand);
             preStm.setString(1, customer.getUsername());
             preStm.setString(2, customer.getPassword());
             ResultSet res = preStm.executeQuery();
-            if (! res.next()) {
-                cid = addUserData(customer);
+            if (res.next()) {
+                cid = res.getInt("cid");
+            } else {
+                cid = -1;
             }
-            
-        } catch (SQLException ex) {
-           cid = -2;
-        }
-        
-        return cid;
 
+        } catch (SQLException ex) {
+            cid = -2;
+        }
+
+        return cid;
     }
 
     public int getCreditLimit(int cid) {
-        int creditLimit = -1;
+        int creditLimit;
         try {
 
             String sqlCommand = "select ccredit_limit from customer where cid= ?";
@@ -79,11 +133,14 @@ public class CustomerHandler {
             preStm.setInt(1, cid);
             ResultSet res = preStm.executeQuery();
             if (res.next()) {
-                creditLimit = res.getInt(1);
+                creditLimit = res.getInt("ccredit_limit");
+            }
+            else{
+                creditLimit = -1;
             }
         } catch (SQLException ex) {
             creditLimit = -2;
-        } 
+        }
         return creditLimit;
 
     }
@@ -96,7 +153,7 @@ public class CustomerHandler {
             preStm.setInt(2, cid);
             preStm.executeUpdate();
         } catch (SQLException ex) {
-            
+
         }
     }
 
@@ -113,4 +170,3 @@ public class CustomerHandler {
     }
 
 }
-

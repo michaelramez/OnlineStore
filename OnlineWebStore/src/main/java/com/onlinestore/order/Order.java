@@ -10,8 +10,6 @@ import com.onlinestore.products.Product;
 import com.onlinestore.products.Stock;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *

@@ -7,7 +7,6 @@ package com.onlinestore.database;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,32 +31,35 @@ public class WebDatabase {
         return databaseInstance;
     }
 
-    public Connection getConnection() {
-        return connection;
+    public PreparedStatement GetPreparedStatement(String sqlCommand) throws SQLException {
+        return connection.prepareStatement(sqlCommand);
     }
 
-
-    public void connectToDatabase() {
-
-        try {
-            Class.forName("org.postgresql.Driver");
-            connection = DriverManager.getConnection(url, userName, pass);
-            System.out.println("Connection is made successfully");
-
-        } catch (ClassNotFoundException | SQLException ex) {
-            System.out.println("webDatabase.WebDataBase.connect()error");
-        }
-
+    public void RollbackTransaction() throws SQLException {
+        connection.rollback();
     }
 
-
+    public void CommitTransaction() throws SQLException{
+        connection.commit();
+    }
     
-    public void closeDatabase() throws SQLException {
+    public void connectToDB() throws ClassNotFoundException, SQLException {
+
+        Class.forName("org.postgresql.Driver");
+        connection = DriverManager.getConnection(url, userName, pass);
+//        connection.setAutoCommit(false);
+        connection.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+        System.out.println("Connection is made successfully");
+
+    }
+
+    public void closeDBConnection() throws SQLException {
         connection.close();
     }
 
     public static void main(String[] args) throws SQLException {
 //        WebDatabase db = WebDatabase.databaseInstance;
+
     }
 
 }

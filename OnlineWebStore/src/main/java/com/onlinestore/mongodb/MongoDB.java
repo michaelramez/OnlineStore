@@ -10,6 +10,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import static com.mongodb.client.model.Filters.eq;
+import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.InsertOneResult;
@@ -23,8 +24,8 @@ import org.bson.conversions.Bson;
  */
 public class MongoDB {
     private final String URL = "mongodb://localhost:27017";
-    private final String DBName = "productsrating";
-    private final String collectionName = "product";
+    private final String DBName = "customerorders";
+    private final String collectionName = "orders";
     private MongoClient mongoClient;
     private MongoDatabase mongoDatabase;
     private MongoCollection<Document> mongoCollection;
@@ -45,38 +46,45 @@ public class MongoDB {
         mongoCollection = mongoDatabase.getCollection(collectionName);
     }
     
-    public void MongoInsert(){
-        
+    public void CloseMongoConnection(){
+        mongoClient.close();
     }
     
-    public void MongoUpdate(){
-        
+    
+    public void MongoUpsert(Bson filter, Bson update){
+        UpdateOptions updateOptions = new UpdateOptions().upsert(true);
+        mongoCollection.updateOne(filter, update, updateOptions);
     }
     
-    public void MongoDelete(){
-        
+    
+    public void MongoDeleteOne(Bson filter){
+        mongoCollection.deleteOne(filter);
     }
     
-    public void MongoFindOne(){
-        
+    public void MongoDeleteMany(Bson filter){
+        mongoCollection.deleteMany(filter);
     }
     
-    public void MongoFindMany(){
-        
+    
+    public Document MongoFindOne(Bson filter){
+        return mongoCollection.find(filter).first();
+    }
+    
+    public MongoCursor<Document> MongoFindMany(Bson filter){
+        return mongoCollection.find(filter).iterator();        
     }
     
     public static void main(String[] args) {
-        String URL = "mongodb://localhost:27017";
-        String DBName = "productsrating";
-        String collectionName = "product";
-        MongoClient mongoClient = MongoClients.create(URL);
-        MongoDatabase mongodatabase = mongoClient.getDatabase(DBName);
-        MongoCollection<Document> collection = mongodatabase.getCollection(collectionName);
-        
+//        String URLmain = "mongodb://localhost:27017";
+//        String DBNamemain = "productsrating";
+//        String collectionNamemain = "product";
+//        
+//        MongoClient mongoClient = MongoClients.create(URLmain);
+//        MongoDatabase mongodatabase = mongoClient.getDatabase(DBNamemain);
+//        MongoCollection<Document> collection = mongodatabase.getCollection(collectionNamemain);
         //insert
-        Document insDocument = new Document().append("pid", 1).append("rating", "good");
-        InsertOneResult insResult = collection.insertOne(insDocument);
-        
+//        Document insDocument = new Document().append("pid", 1).append("rating", "good");
+//        InsertOneResult insResult = collection.insertOne(insDocument);
         //update   
 //        Document updateDocument = new Document().append("pid", 1);
 //        Bson updateBson = Updates.combine(Updates.set("rating", "bad"));
@@ -89,14 +97,15 @@ public class MongoDB {
 //        DeleteResult delResult = collection.deleteMany(delBson);
         
         //find       
-        Bson findBson = eq("pid", 1);
+//        Bson findBson = eq("pid", 1);
 //        Document findDocument = collection.find(findBson).first();
 //        System.out.println("rating is: " + findDocument.getString("rating"));
         //find many
-        MongoCursor<Document> cursor = collection.find(findBson).iterator();
-        while (cursor.hasNext()){
-            System.out.println("rating is: " + cursor.next().getString("rating"));
-        }
-        cursor.close();
+//        MongoCursor<Document> cursor = collection.find(findBson).iterator();
+//        while (cursor.hasNext()){
+//            System.out.println("rating is: " + cursor.next().getString("rating"));
+//        }
+//        cursor.close();
+
     }
 }

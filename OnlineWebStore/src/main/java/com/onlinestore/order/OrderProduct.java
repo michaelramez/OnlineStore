@@ -9,20 +9,29 @@ package com.onlinestore.order;
  * @author Michael Ramez
  */
 public class OrderProduct {
-    private final int id, reqQuantity;
-
-    public OrderProduct(int id, int reqQuantity) {
+    private Integer id, reqQuantity;
+    
+    public OrderProduct(Integer id, Integer reqQuantity) {
         this.id = id;
         this.reqQuantity = reqQuantity;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public int getReqQuantity() {
+    public Integer getReqQuantity() {
         return reqQuantity;
     }
-    
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setReqQuantity(Integer reqQuantity) {
+        this.reqQuantity = reqQuantity;
+    }
+
+
     
 }

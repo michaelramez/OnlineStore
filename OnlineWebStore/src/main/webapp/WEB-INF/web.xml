@@ -5,24 +5,101 @@
         <listener-class>com.onlinestore.contextlistener.WebappInit</listener-class>
     </listener>
     <servlet>
-        <servlet-name>ViewCartServlet</servlet-name>
-        <servlet-class>com.onlinestore.servlets.ViewCartServlet</servlet-class>
+        <servlet-name>RestService</servlet-name>
+        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+        <init-param>
+            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <param-value>com.onlinestore.restapi</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet>
         <servlet-name>UpdateCartServlet</servlet-name>
-        <servlet-class>com.onlinestore.servlets.UpdateCartServlet</servlet-class>
+        <servlet-class>com.onlinestore.clientservlets.UpdateCartServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>LogoutServlet</servlet-name>
+        <servlet-class>com.onlinestore.clientservlets.LogoutServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>EditProductServlet</servlet-name>
+        <servlet-class>com.onlinestore.adminservlets.EditProductServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>RemoveProductServlet</servlet-name>
+        <servlet-class>com.onlinestore.adminservlets.RemoveProductServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddProductServlet</servlet-name>
+        <servlet-class>com.onlinestore.adminservlets.AddProductServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddCategoryServlet</servlet-name>
+        <servlet-class>com.onlinestore.adminservlets.AddCategoryServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddToCartServlet</servlet-name>
+        <servlet-class>com.onlinestore.clientservlets.AddToCartServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateCustomerServlet</servlet-name>
+        <servlet-class>com.onlinestore.clientservlets.UpdateCustomerServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>VerificationActionServlet</servlet-name>
+        <servlet-class>com.onlinestore.clientservlets.VerificationActionServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateRatingServlet</servlet-name>
+        <servlet-class>com.onlinestore.clientservlets.UpdateRatingServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>ViewCartServlet</servlet-name>
-        <url-pattern>/ViewCartServlet</url-pattern>
+        <servlet-name>RestService</servlet-name>
+        <url-pattern>/rest/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>UpdateCartServlet</servlet-name>
         <url-pattern>/UpdateCartServlet</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LogoutServlet</servlet-name>
+        <url-pattern>/LogoutServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditProductServlet</servlet-name>
+        <url-pattern>/EditProductServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RemoveProductServlet</servlet-name>
+        <url-pattern>/RemoveProductServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddProductServlet</servlet-name>
+        <url-pattern>/AddProductServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddCategoryServlet</servlet-name>
+        <url-pattern>/AddCategoryServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddToCartServlet</servlet-name>
+        <url-pattern>/AddToCartServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateCustomerServlet</servlet-name>
+        <url-pattern>/UpdateCustomerServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>VerificationActionServlet</servlet-name>
+        <url-pattern>/VerificationActionServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateRatingServlet</servlet-name>
+        <url-pattern>/UpdateRatingServlet</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
-            30
+            0
         </session-timeout>
     </session-config>
 </web-app>

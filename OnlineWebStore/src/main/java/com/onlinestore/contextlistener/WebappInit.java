@@ -5,8 +5,11 @@
 package com.onlinestore.contextlistener;
 
 import com.onlinestore.database.WebDatabase;
-import com.onlinestore.products.Stock;
+import com.onlinestore.mongodb.MongoDB;
+import com.onlinestore.twilio.TwilioService;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
@@ -16,20 +19,32 @@ import javax.servlet.ServletContextListener;
  * @author Michael Ramez
  */
 public class WebappInit implements ServletContextListener {
-
+    private final WebDatabase dbInstance = WebDatabase.getDatabaseInstance();
+    private final TwilioService twilioService = TwilioService.GetTwilioServiceInstance();
+    private final MongoDB mongodb = MongoDB.GetMongoDBInstance();
+    
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         
-        WebDatabase.getDatabaseInstance().connectToDatabase();
-        Stock.getStockInstance().LoadProducts();
+        try {
+            dbInstance.connectToDB();
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(WebappInit.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        twilioService.InitTwilioService();
+        mongodb.ConnectToMongo();
+        
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         try {
-            WebDatabase.getDatabaseInstance().closeDatabase();
+            dbInstance.closeDBConnection();
         } catch (SQLException ex) {
-            
+            Logger.getLogger(WebappInit.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        twilioService.DestroyTwilioService();
     }
 }

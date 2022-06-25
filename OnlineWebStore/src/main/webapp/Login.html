@@ -11,21 +11,16 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
     </head>
     <body>
         <div>
-            <form method="GET" action="ResultServlet">
+            <form method="GET" action="LoginHandler.jsp">
 
                 <label for="uname">User Name</label><br>
-                <input type="text" id="uname" name="uname">
+                <input type="text" id="uname" name="uname" required>
                 <br>
                 <br>
-
                 <label for="pass">Password</label><br>
-                <input type="password" id="pass" name="pass">
-                <br>
-                <br>
+                <input type="password" id="pass" name="pass" required>
                 
-                <input type="hidden" value="id">
-                
-                <input type="submit" value="Register">
+                <input type="submit" value="Login">
             </form>
         </div>
     </body>

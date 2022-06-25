@@ -11,7 +11,6 @@ import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.rest.lookups.v1.PhoneNumber;
 import com.twilio.twiml.VoiceResponse;
 import com.twilio.twiml.voice.Say;
-//import com.twilio.type.PhoneNumber;
 import java.util.Random;
 
 /**
@@ -22,42 +21,45 @@ public class TwilioService {
 
     private static final TwilioService twilioServiceInstance = new TwilioService();
     private final String ACCOUNT_SID = "ACa28f4ca4bf8073178586c3d9555b8551";
-    private final String AUTH_TOKEN = "ffd5276a0937ef5cc16a84c9cd2f6224";
+    private final String AUTH_TOKEN = "50baf2ba9bed279123c7f14e68180ddb";
     private final String TWILIO_PHONE = "+18108181439";
     private final int CODE_LENGTH = 6;
-    
-    private TwilioService() {
+
+    private TwilioService() {                
+    }
+
+    public void InitTwilioService(){
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
         System.out.println("com.onlinestore.twilio.TwilioService.<init>()");
     }
-
+    
+    public void DestroyTwilioService(){
+        Twilio.destroy();
+    }
+    
     public static TwilioService GetTwilioServiceInstance() {
         return twilioServiceInstance;
     }
 
-    public class PhoneValidationErrors{
-        boolean phoneInvalid, otherError;
+    public class PhoneValidationInfo {
 
-        private PhoneValidationErrors() {
-            this.phoneInvalid = this.otherError;
+        private boolean phoneInvalid, otherError;
+
+        private PhoneValidationInfo() {
+            this.phoneInvalid = this.otherError = false;
         }
 
         public boolean isPhoneInvalid() {
             return phoneInvalid;
         }
 
-        public boolean isOtherError() {
-            return otherError;
-        }
-
         public boolean isNoErrors() {
             return phoneInvalid == false && otherError == false;
         }
-        
-        
-        
+
     }
-    private String GenerateRandomCode() {
+
+    public String GenerateRandomCode() {
         String randomCode = new String();
         Random random = new Random();
         int upperbound = 10;
@@ -68,15 +70,14 @@ public class TwilioService {
         return randomCode;
     }
 
-    public PhoneValidationErrors ValidatePhoneNumber(String phoneNumber) {
-        PhoneValidationErrors phoneValidationErrors = new PhoneValidationErrors();
+    public PhoneValidationInfo ValidatePhoneNumber(String phoneNumber) {
+        PhoneValidationInfo phoneValidationErrors = new PhoneValidationInfo();
         try {
             PhoneNumber.fetcher(new com.twilio.type.PhoneNumber(phoneNumber)).fetch();
         } catch (ApiException e) {
             if (e.getStatusCode() == 404) {
                 phoneValidationErrors.phoneInvalid = true;
-            }
-            else{
+            } else {
 //                System.out.println("other error occured " + e.getStatusCode());
                 phoneValidationErrors.otherError = true;
             }
@@ -103,17 +104,6 @@ public class TwilioService {
     }
 
     public static void main(String[] args) {
-//        String randomCode = new String();
-//        Random random = new Random();
-//        int upperbound = 10;
-//        for (int i = 0; i < 6; i++) {
-//            int randomInteger = random.nextInt(upperbound);
-//            randomCode += Integer.toString(randomInteger);
-//        }
-//        System.out.println(randomCode);
-        TwilioService twilioService = TwilioService.GetTwilioServiceInstance();
-//        int validPhone = twilioService.ValidatePhoneNumber("+203333333333");
-//        System.out.println("The phone validity is : " + validPhone);
     }
 
 }

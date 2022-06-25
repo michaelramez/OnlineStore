@@ -11,35 +11,35 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
     </head>
     <body>
         <div>
-            <form method="GET" action="ResultServlet">
+            <form method="GET" action="RegistrationHandler.jsp">
 
                 <label for="name">Name</label><br>
-                <input type="text" id="name" name="name">
+                <input type="text" id="name" name="name" required>
                 <br>
                 <br>
 
                 <label for="uname">User Name</label><br>
-                <input type="text" id="uname" name="uname">
+                <input type="text" id="uname" name="uname" required>
                 <br>
                 <br>
 
                 <label for="email">Email</label><br>
-                <input type="text" id="email" name="email">
+                <input type="text" id="email" name="email" required>
                 <br>
                 <br>
 
                 <label for="pass">Password</label><br>
-                <input type="password" id="pass" name="pass">
+                <input type="password" id="pass" name="pass" required>
                 <br>
                 <br>
 
                 <label for="phone">Phone</label><br>
-                <input type="text" id="phone" name="phone">
+                <input type="tel" id="phone" name="phone" required>
                 <br>
                 <br>
 
-                <label for="bdate">Birthday</label><br>
-                <input type="date" id="bdate" name="bdate">
+                <label for="bdate">Date of Birth</label><br>
+                <input type="date" id="bdate" name="bdate" required>
                 <br>
                 <br>
 
@@ -54,7 +54,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
                 <br>
 
                 <label for="climit">Credit Limit</label><br>
-                <input type="text" id="climit" name="climit">
+                <input type="number" value="0" min="0" id="climit" name="climit" required>
                 <br>
                 <br>
 

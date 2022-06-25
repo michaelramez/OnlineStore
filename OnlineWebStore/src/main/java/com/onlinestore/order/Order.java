@@ -5,9 +5,7 @@
 package com.onlinestore.order;
 
 import com.onlinestore.customer.CustomerHandler;
-import com.onlinestore.database.WebDatabase;
-import com.onlinestore.products.Product;
-import com.onlinestore.products.Stock;
+import com.onlinestore.stock.Stock;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -17,73 +15,88 @@ import java.util.List;
  */
 public class Order {
 
-    private static final WebDatabase db = WebDatabase.getDatabaseInstance();
+//    private final WebDatabase dbInstance = WebDatabase.getDatabaseInstance();
     private static final Stock stock = Stock.getStockInstance();
-    private static final CustomerHandler customerHandler = CustomerHandler.getCustomerHandlerInstance();
+    private final CustomerHandler customerHandler = CustomerHandler.getCustomerHandlerInstance();
+    private final OrderHandler orderHandler = OrderHandler.GetOrderHandlerInstance();
     private final List<OrderProduct> order;
     private final int cid;
     private int totalOrderPrice;
-    private final int customerCredit;
+    private int customerCredit;
+    private OrderErrors orderErrors;
 
     public Order(List<OrderProduct> order, int cid) {
-        this.customerCredit = customerHandler.getCreditLimit(cid);
         this.totalOrderPrice = 0;
         this.order = order;
         this.cid = cid;
     }
 
-    private boolean CheckOrderInStock() {
+    public class OrderErrors {
+
+        private boolean outOfStock, insufficientCredit;
+        private String outOfStockPname;
+
+        private OrderErrors() {
+            this.outOfStock = this.insufficientCredit = false;
+        }
+
+        public boolean isOutOfStock() {
+            return outOfStock;
+        }
+
+        public boolean isInsufficientCredit() {
+            return insufficientCredit;
+        }
+        
+        public boolean isNoErrors() {
+            return outOfStock == false && insufficientCredit == false;
+        }
+
+        public String getOutOfStockPname() {
+            return outOfStockPname;
+        }        
+    }
+
+    private void CheckOrderInStock() throws SQLException {
+
         for (OrderProduct orderedProduct : this.order) {
-            Product stockProduct = stock.GetCurrentProducts().get(orderedProduct.getId());
+            int orderedProductId = orderedProduct.getId();
             int reqQuantity = orderedProduct.getReqQuantity();
-            int stockQuantity = stockProduct.getStockQuantity();
+            int stockQuantity = stock.GetProductQuantity(orderedProductId);
             if (stockQuantity < reqQuantity) {
-                return false;
+                orderErrors.outOfStockPname = stock.GetProductName(orderedProductId);
+                orderErrors.outOfStock = true;
             }
-            int totalProductPrice = reqQuantity * stockProduct.getPrice();
+            int totalProductPrice = reqQuantity * stock.GetProductPrice(orderedProductId);
             totalOrderPrice += totalProductPrice;
         }
-        return true;
     }
 
-    private boolean CheckCustomerCredit() {
-        return customerCredit >= totalOrderPrice;
-    }
-
-    private int CheckValidOrder() {
-        int validityStatus = 0;
-
-        if (CheckCustomerCredit() == false) {
-            validityStatus = -1;
+    private void CheckCustomerCredit() throws SQLException {
+        this.customerCredit = customerHandler.getCreditLimit(cid);
+        if (customerCredit < totalOrderPrice){
+            orderErrors.insufficientCredit = true;
         }
-
-        if (CheckOrderInStock() == false) {
-            validityStatus = -2;
-        }
-
-        return validityStatus;
     }
 
-    public int MakeOrder() {
-
-        int transStatus = CheckValidOrder();
-        if (transStatus == 0) {
-            try {
-                for (OrderProduct orderedProduct : this.order) {
-                    Product stockProduct = stock.GetCurrentProducts().get(orderedProduct.getId());
-                    int reqQuantity = orderedProduct.getReqQuantity();
-                    int stockQuantity = stockProduct.getStockQuantity();
-                    stockProduct.setStockQuantity(stockQuantity - reqQuantity);
-                    db.getConnection().setAutoCommit(false);
-                    stock.UpdateProductQuantity(stockProduct.getPid(), stockQuantity - reqQuantity);
-                }
-                customerHandler.updateUserCredit(customerCredit - totalOrderPrice, cid);
-                db.getConnection().commit();
-            } catch (SQLException ex) {
-                transStatus = -3;
-            }
-        }
-
-        return transStatus;
+    public OrderErrors CheckOrderValidity() throws SQLException {
+        orderErrors = new OrderErrors();
+        CheckOrderInStock();
+        CheckCustomerCredit();
+        return orderErrors;
     }
+
+    public void BuyOrder() throws SQLException {
+        for (OrderProduct orderedProduct : this.order) {
+            int orderedProductId = orderedProduct.getId();
+            int reqQuantity = orderedProduct.getReqQuantity();
+            int stockQuantity = stock.GetProductQuantity(orderedProductId);
+            stock.UpdateProductQuantity(orderedProductId, stockQuantity - reqQuantity);
+            orderHandler.InsertOrderProduct(orderedProduct, cid);
+        }
+        customerHandler.updateCustomerCredit(customerCredit - totalOrderPrice, cid);
+        
+    }
+   
+
 }

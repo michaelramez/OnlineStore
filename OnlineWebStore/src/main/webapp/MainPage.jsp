@@ -4,9 +4,12 @@
     Author     : Michael Ramez
 --%>
 
+<%@page import="com.onlinestore.stock.Category"%>
+<%@page import="java.util.List"%>
+<%@page import="com.onlinestore.stock.Product"%>
+<%@page import="com.onlinestore.stock.Stock"%>
+<%@page import="com.onlinestore.customer.Customer"%>
 <%@page import="java.util.Map"%>
-<%@page import="com.onlinestore.products.Product"%>
-<%@page import="com.onlinestore.products.Stock"%>
 <%@page import="com.onlinestore.database.WebDatabase"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -16,45 +19,53 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <a href="Login.html">Login</a>
-        <a href="Register.html">Register</a>
+        <jsp:include page="Header.jsp"/>
         <%
+            Stock stock = Stock.getStockInstance();
+            List<Category> categories = stock.GetAllCategories();
 
-            Stock productStock = Stock.getStockInstance();
-            Map<Integer, Product> products = productStock.GetCurrentProducts();
+            for (Category category : categories) {
+                List<Product> products = stock.GetCategoryProducts(category.getId());
+                if (!products.isEmpty()) {
+        %>
+        <div id=<%=category.getName()%>>
+            <h1><%=category.getName()%></h1>
+            <%
 
-            for (Product p : products.values()) {
-        %>      
+                for (Product p : products) {
+            %>      
 
-        <form class="add-to-cart" action="ViewCartServlet" method="GET">
-            <div class="single-product">
-                <div class="product-f-image">
+            <form class="add-to-cart" target="_blank" action="AddToCartServlet" method="GET">
+                <div class="single-product">
+                    <div class="product-f-image">
+                        <h2><p><%= p.getModel()%></p></h2>
+                        <img src=<%= p.getImagePath()%> alt=""><br>
+                        <label>Quantity</label>
 
-                    <h2><a href="single-product.html"><%= p.getModel()%></a></h2>
-                    <img src=<%= p.getImagePath()%> alt=""><br>
-                    <label for="quantity">Quantity</label>
+                        <select name="reqQuantity">
+                            <%
+                                for (int i = 1; i <= p.getStockQuantity(); i++) {
+                            %>
 
-                    <select name="reqQuantity" id="quantity">
-                        <%
-                            for (int i = 1; i <= p.getStockQuantity(); i++) {
-                        %>
+                            <option value=<%=i%>><%=i%></option>
 
-                        <option value=<%=i%>><%=i%></option>
-
-                        <%}%>
-                    </select>
-                    <div class="product-hover">
-                        <!--<a href="single-product.html" class="view-details-link"><i class="fa fa-link"></i> See details</a>-->
-                        <input type="hidden" name="productid" value=<%= p.getPid()%>>
-                        <input type="submit" value="Add to cart" class="btn">
+                            <%}%>
+                        </select>
+                        <br>
+                        <div class="product-carousel-price">
+                            <p>Price:<%= p.getPrice()%></p>
+                        </div> 
+                        <div class="product-hover">
+                            <!--<a href="single-product.html" class="view-details-link"><i class="fa fa-link"></i> See details</a>-->
+                            <input type="hidden" name="productid" value=<%= p.getId()%>>
+                            <input type="submit" value="Add to cart" class="btn">
+                        </div>
                     </div>
                 </div>
-
-                <div class="product-carousel-price">
-                    <p>Price:<%= p.getPrice()%></p>
-                </div> 
-            </div>
-        </form>
+            </form>
+            <%}
+                }%>        
+        </div>
         <%}%>
     </body>
 </html>
